@@ -1,26 +1,55 @@
 import React from 'react';
-import logo from './logo.svg';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from 'react-router-dom';
+
+
+
 import './App.css';
 
-function App() {
+import Home from './components/Home/Home';
+import About from './components/About/About';
+import ReactTutorial from './components/ReactTutorial/ReactTutorial';
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='app-container'>
+      <Router>
+          <div className='app-header'>
+            <div className='routes'>
+              <span><Link to="/">Home</Link></span> |&nbsp;
+              <span><Link to="/about">About Zach</Link></span> |&nbsp;
+              <span><Link to="/reacttutorial">React Tutorial</Link></span>
+            </div>
+          </div>
+
+          <div className='app-body'>
+            <Switch>
+              <Route exact path="/">
+                <Home />
+              </Route>
+              <Route path="/about">
+                <About />
+              </Route>
+              <Route path="/reacttutorial">
+                <ReactTutorial />
+              </Route>
+            </Switch>
+          </div>
+
+          <div className='app-footer'>
+            <div className='contact-info'>
+              Email: zsuhsen@gmail.com | Cell: (651) 328-7806
+            </div>
+          </div>
+        </Router>
+      
     </div>
   );
 }
 
-export default App;
+export default App; 
+
