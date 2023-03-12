@@ -42,7 +42,8 @@ const App = () => {
 
           <div className='app-footer'>
             <div className='contact-info'>
-              Email: zsuhsen@gmail.com | Cell: (651) 328-7806
+              <span>Email: zsuhsen@gmail.com | Cell: (651) 328-7806</span>
+              <span>https://www.linkedin.com/in/zsuhsen/</span>
             </div>
           </div>
         </Router>
