@@ -23,13 +23,16 @@
 
 .app-footer {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
   height: 5%;
   min-height: 6rem;
-  border-top: 1px solid black;
 }
 
 .app-footer .contact-info {
-  padding: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
