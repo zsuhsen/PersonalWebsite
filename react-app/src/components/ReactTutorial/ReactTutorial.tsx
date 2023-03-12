@@ -1,16 +1,18 @@
 import React from 'react';
+import TTTGame from '../TicTacToe/TicTacToeGame';
 
 import './ReactTutorial.css';
 
-const ReactTutorial = () => {
-
-  return (
-    <div className='container'>
-      <div>
-        React Tutorial
+class ReactTutorial extends React.Component {
+  render(): React.ReactNode {
+    return (
+      <div className='container'>
+        <h2>Tutorials</h2>
+        <TTTGame />
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default ReactTutorial; 
+
