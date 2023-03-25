@@ -1,0 +1,29 @@
+{
+  "name": "zsuhsen-lib",
+  "version": "1.0.0",
+  "description": "Component Library",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified \" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zsuhsen/PersonalWebsite.git"
+  },
+  "keywords": [
+    "library",
+    "components"
+  ],
+  "author": "Zach Suhsen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zsuhsen/PersonalWebsite/issues"
+  },
+  "homepage": "https://github.com/zsuhsen/PersonalWebsite#readme",
+  "dependencies": {
+    "lit": "^2.6.1",
+    "lit-html": "^2.6.1",
+    "typescript": "^5.0.2"
+  }
+}
