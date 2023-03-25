@@ -1,16 +1,9 @@
 import React from 'react';
 
-export interface JobView {
-    company: string;
-    title?: string;
-    startDate: string;
-    endDate?: string;
-    description?: string; // max length 200
-}
-
 export interface Job {
     id: number;
     company?: Company;
+    companyName?: string;
     startDate: string;
     endDate?: string;
     title?: string;

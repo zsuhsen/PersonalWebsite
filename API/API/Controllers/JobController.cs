@@ -18,7 +18,7 @@ namespace API.Controllers
             _logger = logger;
         }
 
-        [HttpGet(Name = "")]
+        [HttpGet()]
         public IResult<List<Job>> Get()
         {
             return _jobService.Get();

@@ -1,9 +1,25 @@
 import React from 'react';
+import { ComponentBase, ComponentBaseProps } from '../../providers/ComponentProvider';
 import TTTGame from '../TicTacToe/TicTacToeGame';
 
-import './ReactTutorial.css';
+import './ReactTutorial.scss';
 
-class ReactTutorial extends React.Component {
+interface ReactTutorialProps extends ComponentBaseProps {
+
+}
+
+class ReactTutorial extends ComponentBase<ReactTutorialProps> {
+
+  constructor(props: ReactTutorialProps) {
+    super(props);
+    
+    this.init();
+  }
+
+  init(): void {
+    
+  }
+
   render(): React.ReactNode {
     return (
       <div className='container'>

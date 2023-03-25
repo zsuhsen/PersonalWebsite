@@ -2,9 +2,9 @@ import React from 'react';
 import { of, Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { map, catchError, tap } from 'rxjs/operators'
-import { ServiceType } from '../enums/ServiceType';
-import { QueryParams } from '../models/QueryParams';
-import { Result } from '../models/Result';
+import { ServiceType } from '../../enums/ServiceType';
+import { QueryParams } from '../../models/QueryParams';
+import { Result } from '../../models/Result';
 
 /**
  * Abstract service has a service prescription and a wrapper around rxjs/ajax requests.
@@ -39,7 +39,7 @@ export abstract class Service {
      * @param routeParams - Must be /value1/value2
      * @returns 
      */
-    public create<T>(model: T, routeParams: string): Observable<Result<number>> {
+    public create<T>(model: T, routeParams: string = ''): Observable<Result<number>> {
         return ajax<Result<number>>({
             url: this.url + routeParams,
             method: 'POST',
@@ -59,7 +59,7 @@ export abstract class Service {
      * @param routeParams - Must be /value1/value2
      * @returns 
      */
-    public update<T>(model: T, routeParams: string): Observable<Result<T>> {
+    public update<T>(model: T, routeParams: string = ''): Observable<Result<T>> {
         return ajax<Result<T>>({
             url: this.url + routeParams,
             method: 'PUT',

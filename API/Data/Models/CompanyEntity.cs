@@ -5,7 +5,7 @@ namespace Data.Models
     public class CompanyEntity
     {
         [Key]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [Required]
         [MaxLength(50)]

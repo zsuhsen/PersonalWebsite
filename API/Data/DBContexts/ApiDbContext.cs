@@ -20,7 +20,5 @@ namespace Data.DBContexts
             // connect to sql server with connection string from app settings
             options.UseSqlServer(Configuration.GetConnectionString("ConnectionString"));
         }
-
-        // public DbSet<User> Users { get; set; }
     }
 }

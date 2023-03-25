@@ -1,37 +1,36 @@
 ﻿using AutoMapper;
 using Data.DBContexts;
 using DataAcess.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace DataAcess.Implementation
 {
-    public interface IJobDa
+    public interface ICompanyDa
     {
-        List<Job> Get();
+        List<Company> Get();
         int Create();
-        Job Update();
+        Company Update();
         bool Delete();
     }
-    public class JobDa : IJobDa
+
+    public class CompanyDa : ICompanyDa
     {
         private readonly ApiDbContext _dbContext;
         private readonly IMapper _mapper;
-        public JobDa(ApiDbContext dbContext, IMapper mapper)
+        public CompanyDa(ApiDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
         }
 
-        public List<Job> Get()
+        public List<Company> Get()
         {
-            var jobEntities = _dbContext.Jobs?
-                .Include(x => x.Company)
+            var entities = _dbContext.Companys?
                 .AsEnumerable()
                 .ToList();
 
-            var jobs = _mapper.Map<List<Job>>(jobEntities);
+            var companies = _mapper.Map<List<Company>>(entities);
 
-            return jobs;
+            return companies;
         }
 
         public int Create()
@@ -44,7 +43,7 @@ namespace DataAcess.Implementation
             throw new NotImplementedException();
         }
 
-        public Job Update()
+        public Company Update()
         {
             throw new NotImplementedException();
         }

@@ -4,7 +4,7 @@ namespace DataAcess.Models
     {
         public int Id { get; set; }
 
-        public string? Title { get; set; } // Not Implemented yet
+        public string? Title { get; set; }
 
         public Company? Company { get; set; }
 

@@ -1,106 +1,150 @@
 import React from 'react';
-import { map } from 'rxjs/operators';
-import Grid, { GridData, GridHeader, GridOptions, GridRow } from '../../common/Grid/Grid';
-import { Job, JobView } from '../../models/Job';
+import { map, first } from 'rxjs/operators';
+import { ComponentBase, ComponentBaseProps, ComponentProviders } from '../../providers/ComponentProvider';
+import Grid, { GridHeader, GridOptions, GridRow } from '../../common/Grid/Grid';
+import { Company, Job } from '../../models/Job';
 
-import { JobService } from '../../services/JobsService';
+import './About.scss';
+import JobForm from './forms/JobForm';
+import Overlay from '../../common/Overlay/Overlay';
+import CompanyForm from './forms/CompanyForm';
 
-import './About.css';
+interface DatasetProps<T> {
+  overlayOpen?: boolean;
+  gridOptions?: GridOptions;
+  selected?: T | undefined;
+  all?: T[];
+}
 
-class About extends React.Component {
-  private jobSvc: JobService = new JobService();
+interface AboutProps extends ComponentBaseProps {
 
-  private gridOptions: GridOptions;
+}
 
-  constructor(props: any) {
+class About extends ComponentBase<AboutProps> {
+  private jobProps: DatasetProps<Job>;
+  private companyProps: DatasetProps<Company>;
+
+  constructor(props: AboutProps) {
     super(props);
 
     this.init();
   }
 
   init(): void {
-    this.initGridOptions();
-    this.getJobsData();
+    this.initDatasets();
   }
 
   render(): React.ReactNode {
     return (
-      <div className='container'>
-        <h2>About</h2>
-        <hr/>
-        <Grid gridOptions={this.gridOptions}></Grid>
+      <div>
+        <div className='container'>
+          <h2>About</h2>
+          <hr/>
+            {
+              !this.isLoaded ? <div>Loading...</div> :
+              <div>
+                <Grid gridOptions={ this.jobProps.gridOptions as GridOptions } 
+                  saveRow={ this.saveJobRow.bind(this) } 
+                  removeRow={ this.removeJobRow.bind(this) }></Grid>
+                <button onClick={ () => this.toggleJobOverlay() }>Add Job</button>
+                <button onClick={ () => this.toggleCompanyOverlay() }>Add Company</button>
+              </div>
+            }
+        </div>
+
+        <Overlay isOpen={ !!this.companyProps.overlayOpen } onClose={ this.toggleCompanyOverlay.bind(this) }>
+          <div>
+            <CompanyForm submit={ this.saveCompany.bind(this) }></CompanyForm>
+          </div>
+        </Overlay>
+
+        <Overlay isOpen={ !!this.jobProps.overlayOpen } onClose={ this.toggleJobOverlay.bind(this) }>
+          <div>
+            <JobForm job={ this.jobProps.selected } companies={ this.companyProps.all as Company[] } submit={ this.saveJob.bind(this) }/>
+          </div>
+        </Overlay>
       </div>
     );
   }
 
-  private initGridOptions(): void {
-    this.gridOptions = {
-      title: 'Employment',
-      headers: this.getHeaders(),
-      data: this.getBaseData()
+  private toggleJobOverlay(isAdd: boolean = true): void {
+    this.jobProps.overlayOpen = !this.jobProps.overlayOpen;
+    
+    if (isAdd) {
+      this.jobProps.selected = undefined;
+    }
+
+    this.forceUpdate();
+  };
+
+  private toggleCompanyOverlay(isAdd: boolean = true): void {
+    this.companyProps.overlayOpen = !this.companyProps.overlayOpen;
+
+    if (isAdd) {
+      this.companyProps.selected = undefined;
+    }
+
+    this.forceUpdate();
+  };
+
+  private initDatasets(): void {
+    this.jobProps = {
+      gridOptions: this.jobSvc.getBaseGridOptions()
     };
+
+    this.companyProps = {};
+
+    this.getJobsData();
+    this.getCompanyData();
   }
 
-  private getJobsData(): void {
+  private saveCompany(company: Company): void {
+    console.log('Add/Update company', company);
+  }
+
+  private saveJobRow(row: GridRow): void {
+    this.jobProps.selected = row.model;
+
+    this.toggleJobOverlay(false);
+  }
+
+  private saveJob(job: Job): void {
+    console.log('Add/Update job', job)
+  }
+
+  private removeJobRow(row: GridRow): void {
+    console.log('Delete row :: ', row);
+  }
+
+  private getCompanyData(): void {
     const observer = {
-      next: (jobs: Job[]) => {
-        const rows: GridRow[] = jobs.map(job => {
-          const jobView: JobView = {
-            company: job.company?.name ?? 'unknown',
-            title: job.title,
-            startDate: job.startDate ? this.formatDateString(job.startDate) : '',
-            endDate: job.endDate ? this.formatDateString(job.endDate) : '',
-            description: job.description ?? ''
-          };
-  
-          return {
-            row: jobView,
-            detail: job.company
-          }
-        });
-  
-        this.gridOptions.data.rows = rows;
+      next: (companies: Company[]) => {
+        this.companyProps.all = companies;
       },
       error: () => {},
       complete: () => this.forceUpdate()
     };
 
-    this.jobSvc.getJobs().pipe(map(results => results.data)).subscribe(observer);
+    this.companySvc.getCompanies().pipe(first(), map(results => results.data)).subscribe(observer);
   }
 
-  private getBaseData(): GridData {
-    return {
-      rowKeys: ['company', 'title', 'startDate', 'endDate', 'description'],
-      rows: []
-    }
-  }
+  private getJobsData(): void {
+    
+    const observer = {
+      next: (jobs: Job[]) => {
+        this.jobProps.all = jobs;
 
-  private getHeaders(): GridHeader[] {
-    return [
-      {
-        label: 'Company'
+        if (this.jobProps.gridOptions) {
+          this.jobProps.gridOptions.data.rows = jobs.map(job => this.jobSvc.mapToGridRow(job));
+        }
       },
-      {
-        label: 'Title'
-      },
-      {
-        label: 'Start Date'
-      },
-      {
-        label: 'End Date'
-      },
-      {
-        label: 'Description'
-      }
-    ]
-  }
+      error: () => {},
+      complete: () => this.forceUpdate()
+    };
 
-  private formatDateString(dateString: string): string {
-    const date = new Date(dateString);
-
-    return (date.getDay()) + '/' + (date.getMonth() + 1) + '/' + (date.getFullYear());
+    this.jobSvc.getJobs().pipe(first(), map(results => results.data)).subscribe(observer);
   }
 }
 
-export default About; 
+export default About;
 

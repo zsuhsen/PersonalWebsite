@@ -1,6 +1,10 @@
 .dropdown {
     position: relative;
 
+    span {
+        cursor: pointer;
+    }
+
     .menu {
         position: absolute;
       

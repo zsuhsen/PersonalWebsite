@@ -1,6 +1,13 @@
 import React from 'react';
+import { FiEdit, FiTrash2 } from 'react-icons/fi';
 
 import './Grid.scss';
+
+export interface GridTransaction<T> {
+    add: T[];
+    update: T[];
+    delete: number[];
+}
 
 export interface GridHeader {
     label: string;
@@ -8,8 +15,9 @@ export interface GridHeader {
 }
 
 export interface GridRow {
-    row: any,
-    detail: any
+    id: number;
+    model: any;
+    detail: any;
 }
 
 export interface GridData {
@@ -25,6 +33,8 @@ export interface GridOptions {
 
 interface GridProps {
     gridOptions: GridOptions;
+    saveRow: (row: GridRow) => void;
+    removeRow: (row: GridRow) => void
 }
 
 interface GridState {
@@ -32,6 +42,7 @@ interface GridState {
 }
 
 class Grid extends React.Component<GridProps, GridState> {
+    isAddUpdateOverlayOpen: boolean = false;
 
     constructor(props: GridProps) {
         super(props);
@@ -42,12 +53,20 @@ class Grid extends React.Component<GridProps, GridState> {
         return this.props.gridOptions;
     }
 
-    private get rowData() {
+    private get rows() {
         return this.gridOptions.data?.rows;
     }
 
     private get rowKeys() {
         return this.gridOptions.data?.rowKeys;
+    }
+
+    private get removeRow() {
+        return this.props.removeRow;
+    }
+
+    private get saveRow() {
+        return this.props.saveRow;
     }
 
     render() {
@@ -56,21 +75,24 @@ class Grid extends React.Component<GridProps, GridState> {
                 <h3>{ this.gridOptions.title}</h3>
                 <table>
                     <thead>
-                        <tr>
+                        <tr className='row-header'>
                         {
-                            this.gridOptions.headers.map((header, index) => <th key={index}>{header.label}</th>)
+                            this.gridOptions.headers.map((header, index) => <th key={index} className='cell'>{header.label}</th>)
                         }
+                        <th key={'delete'}></th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            this.rowData?.length === 0 ? 
-                                <tr><td rowSpan={this.rowData.length}>No Data</td></tr> : 
-                                this.rowData.map((data, index) => <tr key={index}>{
-                                    this.rowKeys?.length === 0 ?
-                                        <td>No Data</td> :
-                                        this.rowKeys.map((key, j) => <td key={j}>{data.row[key]}</td>)
-                                }</tr>)
+                            this.rows?.length === 0 || this.rowKeys?.length === 0 ? 
+                                <tr><td>No Data</td></tr> : 
+                                this.rows.map((row, i) => <tr key={i}>{
+                                    this.rowKeys?.map((key, j) => <td key={j} className='cell'>{row.model[key]}</td>)
+                                }<td key={'delete-' + row.id}>
+                                    <span onClick={() => this.saveRow(row)}><FiEdit /></span>
+                                    <span onClick={() => this.removeRow(row)}><FiTrash2 /></span>
+                                    </td>
+                                </tr>)
                         }
                     </tbody>
                 </table>

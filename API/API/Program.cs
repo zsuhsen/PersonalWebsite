@@ -16,6 +16,9 @@ builder.Services.AddDbContext<ApiDbContext>();
 builder.Services.AddTransient<IJobService, JobService>();
 builder.Services.AddTransient<IJobDa, JobDa>();
 
+builder.Services.AddTransient<ICompanyService, CompanyService>();
+builder.Services.AddTransient<ICompanyDa, CompanyDa>();
+
 // Mapping Profiles
 var mapperConfig = new MapperConfiguration(mc =>
 {

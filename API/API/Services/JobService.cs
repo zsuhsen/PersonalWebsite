@@ -12,7 +12,6 @@ namespace API.Services
         IResult<bool> Delete();
     }
 
-
     public class JobService : IJobService
     {
         private readonly IJobDa _jobDa;
@@ -23,22 +22,22 @@ namespace API.Services
 
         public IResult<List<Job>> Get()
         {
-            return _jobDa.Get();
+            return _jobDa.Get().ToResult();
         }
 
         public IResult<int> Create()
         {
-            return 1.ToResult();
+            return _jobDa.Create().ToResult();
         }
 
         public IResult<Job> Update()
         {
-            return new Job().ToResult();
+            return _jobDa.Update().ToResult();
         }
 
         public IResult<bool> Delete()
         {
-            return true.ToResult();
+            return _jobDa.Delete().ToResult();
         }
     }
 }
